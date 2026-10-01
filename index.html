@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="gu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Learning</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:#f5f7fb;color:#172033}
+header{padding:22px 18px;background:#4f46e5;color:#fff;border-radius:0 0 24px 24px}
+h1{margin:0 0 6px;font-size:28px}.sub{opacity:.9}
+main{padding:16px;max-width:700px;margin:auto}.card{background:#fff;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 3px 14px #00000010}
+button,select{border:0;border-radius:12px;padding:12px 15px;font-size:16px;background:#eef0ff;color:#24245a}
+button.primary{background:#4f46e5;color:#fff}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.option{display:block;width:100%;text-align:left;margin:8px 0;background:#f3f4f6}.correct{background:#dcfce7!important}.wrong{background:#fee2e2!important}
+.hidden{display:none}.score{font-size:22px;font-weight:700}.small{font-size:14px;color:#667085}
+nav{display:flex;gap:8px;overflow:auto;margin:12px 0}nav button{white-space:nowrap}
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 Smart Learning</h1>
+  <div class="sub" id="welcome">Learn • Practice • Improve</div>
+</header>
+<main>
+  <div class="card">
+    <label><b>Language / ભાષા</b></label><br><br>
+    <select id="lang" onchange="setLang()">
+      <option value="gu">ગુજરાતી</option><option value="hi">हिन्दी</option><option value="en">English</option>
+    </select>
+  </div>
+
+  <nav>
+    <button onclick="show('home')">🏠 Home</button>
+    <button onclick="show('lesson')">📖 Lesson</button>
+    <button onclick="show('quiz')">🎮 Quiz</button>
+  </nav>
+
+  <section id="home" class="card">
+    <h2 id="homeTitle">આજે શીખીએ!</h2>
+    <p id="homeText">નાનું પગલું દરરોજ — મોટું જ્ઞાન.</p>
+    <div class="grid">
+      <button class="primary" onclick="show('lesson')" id="learnBtn">📖 Lesson શરૂ કરો</button>
+      <button onclick="show('quiz')" id="quizBtn">🎮 Quiz રમો</button>
+    </div>
+  </section>
+
+  <section id="lesson" class="card hidden">
+    <h2 id="lessonTitle">English Basics</h2>
+    <p id="lessonText">Hello = નમસ્તે<br>Thank you = આભાર<br>Good morning = શુભ સવાર</p>
+    <button class="primary" onclick="show('quiz')" id="practiceBtn">Practice →</button>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <h2 id="question">“Hello” નો અર્થ શું?</h2>
+    <div id="options"></div>
+    <p id="feedback"></p>
+    <div class="score" id="score">Score: 0</div>
+  </section>
+</main>
+<script>
+const data={
+ gu:{homeTitle:"આજે શીખીએ!",homeText:"નાનું પગલું દરરોજ — મોટું જ્ઞાન.",learn:"📖 Lesson શરૂ કરો",quiz:"🎮 Quiz રમો",lesson:"English Basics",practice:"Practice →",q:"“Hello” નો અર્થ શું?",ok:"સાચો જવાબ! 🎉",bad:"હજુ ખોટું છે. સાચો જવાબ: નમસ્તે.",score:"Score: "},
+ hi:{homeTitle:"आज सीखते हैं!",homeText:"हर दिन एक छोटा कदम — बड़ा ज्ञान.",learn:"📖 Lesson शुरू करें",quiz:"🎮 Quiz खेलें",lesson:"English Basics",practice:"Practice →",q:"“Hello” का अर्थ क्या है?",ok:"सही जवाब! 🎉",bad:"अभी गलत है। सही जवाब: नमस्ते.",score:"Score: "},
+ en:{homeTitle:"Let's learn today!",homeText:"One small step every day — big knowledge.",learn:"📖 Start Lesson",quiz:"🎮 Play Quiz",lesson:"English Basics",practice:"Practice →",q:"What does “Hello” mean?",ok:"Correct! 🎉",bad:"Not quite. Correct answer: Namaste.",score:"Score: "}
+};
+let lang="gu", score=0;
+function setLang(){lang=document.getElementById("lang").value; const d=data[lang];
+document.getElementById("homeTitle").textContent=d.homeTitle;document.getElementById("homeText").textContent=d.homeText;
+document.getElementById("learnBtn").textContent=d.learn;document.getElementById("quizBtn").textContent=d.quiz;
+document.getElementById("lessonTitle").textContent=d.lesson;document.getElementById("practiceBtn").textContent=d.practice;
+document.getElementById("question").textContent=d.q;document.getElementById("score").textContent=d.score+score;renderOptions();}
+function show(id){["home","lesson","quiz"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id));if(id==="quiz")renderOptions();}
+function renderOptions(){let opts=lang==="gu"?["નમસ્તે","આભાર","શુભ રાત્રી"]:lang==="hi"?["नमस्ते","धन्यवाद","शुभ रात्रि"]:["Thank you","Namaste","Good night"];
+document.getElementById("options").innerHTML=opts.map((x,i)=>`<button class="option" onclick="answer(${i},this)">${x}</button>`).join("");document.getElementById("feedback").textContent="";}
+function answer(i,el){document.querySelectorAll(".option").forEach(b=>b.disabled=true);if(i===0){score++;el.classList.add("correct");document.getElementById("feedback").textContent=data[lang].ok}else{el.classList.add("wrong");document.getElementById("options").children[0].classList.add("correct");document.getElementById("feedback").textContent=data[lang].bad}document.getElementById("score").textContent=data[lang].score+score;}
+setLang();
+</script>
+</body>
+</html>
